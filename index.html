@@ -2,6 +2,12 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="msapplication-TileColor" content="#1a1a2e">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -10,6 +16,30 @@
 <meta name="theme-color" content="#1a1a2e">
 <style>
 *, *::before, *::after {
+    /* Ocultar barras del sistema en modo app */
+html {
+    overflow: hidden;
+    height: 100%;
+}
+
+body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+}
+
+/* Ocultar scrollbar */
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* Forzar pantalla completa */
+@supports (padding-top: env(safe-area-inset-top)) {
+    body {
+        padding-top: env(safe-area-inset-top);
+    }
+}
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -2106,5 +2136,40 @@ document.getElementById('buscador-home').addEventListener('input', function(e) {
 
 cargarDatos();
 </script>
+    <script>
+// Forzar pantalla completa en Android
+if ('standalone' in window.navigator && window.navigator.standalone) {
+    document.addEventListener('click', function(e) {
+        if (e.target.tagName === 'A' && e.target.href.indexOf(window.location.origin) !== -1) {
+            e.preventDefault();
+            window.location.href = e.target.href;
+        }
+    });
+}
+
+// Ocultar barra de estado en Android
+if (window.navigator && window.navigator.standalone) {
+    document.body.classList.add('standalone');
+}
+
+// Intentar entrar en fullscreen
+function enterFullscreen() {
+    if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(function(e) {});
+    } else if (document.documentElement.webkitRequestFullscreen) {
+        document.documentElement.webkitRequestFullscreen();
+    }
+}
+
+// Intentar al cargar
+window.addEventListener('load', function() {
+    setTimeout(enterFullscreen, 500);
+});
+
+// Intentar al primer toque
+document.addEventListener('touchstart', function() {
+    enterFullscreen();
+}, { once: true });
+    </script>
 </body>
 </html>
