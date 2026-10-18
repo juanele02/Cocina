@@ -696,6 +696,12 @@ body {
     margin-top: 18px;
 }
 
+.acciones-form-tres {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
 .btn {
     flex: 1;
     padding: 15px;
@@ -731,6 +737,28 @@ body {
 .btn-danger {
     background: linear-gradient(135deg, #f093fb, #f5576c);
     color: white;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+    color: white;
+    box-shadow: 0 5px 15px rgba(17, 153, 142, 0.3);
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(17, 153, 142, 0.4);
+}
+
+.btn-import {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-import:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
 }
 
 .detalle-card {
@@ -837,6 +865,173 @@ body {
     display: flex;
     gap: 10px;
     margin-top: 22px;
+    flex-wrap: wrap;
+}
+
+.detalle-acciones .btn {
+    min-width: 120px;
+}
+
+/* ============ MODAL SELECCIÓN EXPORTAR ============ */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9998;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-overlay.activa {
+    display: flex;
+}
+
+.modal-seleccion {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.modal-seleccion-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #673c4b 100%);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-seleccion-header h3 {
+    font-family: Georgia, serif;
+    font-size: 1.3em;
+    margin: 0;
+}
+
+.modal-seleccion-header .btn-cerrar-modal {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.3em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-seleccion-header .btn-cerrar-modal:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.modal-seleccion-acciones {
+    padding: 12px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    gap: 10px;
+}
+
+.modal-seleccion-acciones button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-seleccionar-todas {
+    background: #667eea;
+    color: white;
+}
+
+.btn-deseleccionar-todas {
+    background: #e9ecef;
+    color: #555;
+}
+
+.modal-seleccion-lista {
+    overflow-y: auto;
+    padding: 10px 20px;
+    flex: 1;
+}
+
+.receta-check {
+    display: flex;
+    align-items: center;
+    padding: 14px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-radius: 10px;
+}
+
+.receta-check:hover {
+    background: #f8f9fa;
+}
+
+.receta-check input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    margin-right: 14px;
+    cursor: pointer;
+    accent-color: #ff6b6b;
+    flex-shrink: 0;
+}
+
+.receta-check-label {
+    flex: 1;
+    font-size: 15px;
+    color: #333;
+    font-weight: 500;
+}
+
+.receta-check-categoria {
+    font-size: 11px;
+    color: #888;
+    background: #f0f0f0;
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+.modal-seleccion-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    gap: 10px;
+    background: #fafbfc;
+}
+
+.modal-seleccion-footer .btn {
+    flex: 1;
+}
+
+.seleccion-contador {
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    color: #666;
+    font-weight: 600;
+}
+
+.seleccion-contador strong {
+    color: #ff6b6b;
 }
 
 .modal-imagen {
@@ -964,7 +1159,7 @@ body {
     border-radius: 3px;
 }
 
-#import-file {
+#import-file-individual, #import-file-multiple {
     display: none;
 }
 </style>
@@ -974,9 +1169,9 @@ body {
 <div id="pantalla-home" class="pantalla activa">
     <div class="home-decoraciones">
         <div class="home-decoracion">🍰</div>
-        <div class="home-decoracion"></div>
+        <div class="home-decoracion">🥘</div>
         <div class="home-decoracion">🍪</div>
-        <div class="home-decoracion">🧁</div>
+        <div class="home-decoracion"></div>
         <div class="home-decoracion">🍝</div>
         <div class="home-decoracion">🥗</div>
     </div>
@@ -1010,16 +1205,16 @@ body {
                 <span>Nueva receta</span>
             </button>
 
-            <button class="home-btn sync" onclick="exportarRecetas()">
+            <button class="home-btn sync" onclick="abrirModalExportar()">
                 <span class="sync-icon">📤</span>
                 <span>Exportar recetas</span>
             </button>
 
-            <button class="home-btn sync" onclick="document.getElementById('import-file').click()">
+            <button class="home-btn sync" onclick="document.getElementById('import-file-multiple').click()">
                 <span class="sync-icon">📥</span>
                 <span>Importar recetas</span>
             </button>
-            <input type="file" id="import-file" accept=".json" onchange="importarRecetas(event)">
+            <input type="file" id="import-file-multiple" accept=".json" onchange="importarRecetasMultiple(event)">
         </div>
     </div>
 </div>
@@ -1069,7 +1264,7 @@ body {
             </div>
 
             <div class="form-card">
-                <h3>🥕 Ingredientes</h3>
+                <h3> Ingredientes</h3>
                 <div class="form-group">
                     <label>Un ingrediente por línea</label>
                     <textarea id="ingredientes" required placeholder="200g de harina&#10;100g de azúcar&#10;3 huevos"></textarea>
@@ -1077,7 +1272,7 @@ body {
             </div>
 
             <div class="form-card">
-                <h3>‍🍳 Elaboración</h3>
+                <h3>👨‍ Elaboración</h3>
                 <div class="form-group">
                     <label>Describe paso a paso la preparación</label>
                     <textarea id="elaboracion" required placeholder="1. Precalienta el horno...&#10;2. Mezcla los ingredientes..."></textarea>
@@ -1090,8 +1285,9 @@ body {
                 <button type="button" class="btn-agregar-img" onclick="agregarImagen()">+ Agregar imagen</button>
             </div>
 
-            <div class="acciones-form">
+            <div class="acciones-form-tres">
                 <button type="button" class="btn btn-secondary" onclick="volverDesdeFormulario()">Cancelar</button>
+                <button type="button" class="btn btn-import" onclick="document.getElementById('import-file-individual').click()">📥 Importar</button>
                 <button type="submit" class="btn btn-primary">💾 Guardar</button>
             </div>
         </form>
@@ -1108,6 +1304,27 @@ body {
     </div>
 </div>
 
+<!-- Modal de selección para exportar múltiples recetas -->
+<div id="modal-exportar" class="modal-overlay">
+    <div class="modal-seleccion">
+        <div class="modal-seleccion-header">
+            <h3>📤 Seleccionar recetas</h3>
+            <button class="btn-cerrar-modal" onclick="cerrarModalExportar()">✕</button>
+        </div>
+        <div class="modal-seleccion-acciones">
+            <button class="btn-seleccionar-todas" onclick="seleccionarTodas(true)">✅ Seleccionar todas</button>
+            <button class="btn-deseleccionar-todas" onclick="seleccionarTodas(false)">❌ Deseleccionar</button>
+        </div>
+        <div class="modal-seleccion-lista" id="lista-exportar"></div>
+        <div class="seleccion-contador" id="contador-seleccion">0 recetas seleccionadas</div>
+        <div class="modal-seleccion-footer">
+            <button class="btn btn-secondary" onclick="cerrarModalExportar()">Cancelar</button>
+            <button class="btn btn-success" onclick="confirmarExportarSeleccion()">📤 Exportar seleccionadas</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal imagen pantalla completa -->
 <div id="modal-imagen" class="modal-imagen">
     <button class="modal-cerrar" onclick="cerrarModalImagen()">✕</button>
     <button class="modal-nav modal-prev" onclick="navImagen(-1)">‹</button>
@@ -1116,6 +1333,8 @@ body {
     <div id="modal-img-texto" class="modal-texto"></div>
     <div id="modal-img-contador" class="modal-contador"></div>
 </div>
+
+<input type="file" id="import-file-individual" accept=".json" onchange="importarRecetaIndividual(event)">
 
 <script>
 var recetas = [];
@@ -1126,6 +1345,7 @@ var recetaEditandoId = null;
 var contadorImagenes = 0;
 var imagenesActuales = [];
 var imagenActualIndex = 0;
+var recetaActualDetalle = null;
 
 function cargarDatos() {
     try {
@@ -1224,6 +1444,8 @@ function verReceta(id) {
     var receta = recetas.find(function(r) { return r.id === id; });
     if (!receta) return;
 
+    recetaActualDetalle = receta;
+
     var imagenesHTML = '';
     if (receta.imagenes && receta.imagenes.length > 0) {
         for (var i = 0; i < receta.imagenes.length; i++) {
@@ -1247,11 +1469,12 @@ function verReceta(id) {
     if (receta.categoria) html += '<span class="detalle-categoria">' + receta.categoria + '</span>';
     html += '<h3 class="detalle-seccion-titulo">🥕 Ingredientes</h3>';
     html += '<ul class="detalle-ingredientes">' + ingredientesHTML + '</ul>';
-    html += '<h3 class="detalle-seccion-titulo">‍🍳 Elaboración</h3>';
+    html += '<h3 class="detalle-seccion-titulo">👨‍🍳 Elaboración</h3>';
     html += '<div class="detalle-elaboracion">' + receta.elaboracion + '</div>';
     html += imagenesHTML;
     html += '<div class="detalle-acciones">';
     html += '<button class="btn btn-secondary" onclick="irAEditarReceta(\'' + receta.id + '\')">✏️ Editar</button>';
+    html += '<button class="btn btn-success" onclick="exportarRecetaIndividual(\'' + receta.id + '\')">📤 Exportar</button>';
     html += '<button class="btn btn-danger" onclick="confirmarEliminar(\'' + receta.id + '\')">🗑️ Eliminar</button>';
     html += '</div></div>';
 
@@ -1553,14 +1776,162 @@ function confirmarEliminar(id) {
     }
 }
 
-function exportarRecetas() {
+// ============ EXPORTAR RECETA INDIVIDUAL ============
+function exportarRecetaIndividual(id) {
+    var receta = recetas.find(function(r) { return r.id === id; });
+    if (!receta) {
+        alert('Receta no encontrada');
+        return;
+    }
+    
+    var datos = {
+        tipo: 'individual',
+        receta: receta,
+        fechaExportacion: new Date().toISOString()
+    };
+    
+    var dataStr = JSON.stringify(datos, null, 2);
+    var dataBlob = new Blob([dataStr], { type: 'application/json' });
+    var url = URL.createObjectURL(dataBlob);
+    var link = document.createElement('a');
+    
+    var nombreArchivo = receta.nombre.replace(/[^a-zA-Z0-9áéíóúñÁÉÍÓÚÑ\s]/g, '').replace(/\s+/g, '_');
+    link.href = url;
+    link.download = 'receta_' + nombreArchivo + '.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    alert('✅ Receta "' + receta.nombre + '" exportada correctamente');
+}
+
+// ============ IMPORTAR RECETA INDIVIDUAL ============
+function importarRecetaIndividual(event) {
+    var file = event.target.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            var datos = JSON.parse(e.target.result);
+            var recetaImportada = datos.receta || null;
+            
+            if (!recetaImportada || !recetaImportada.nombre) {
+                alert('❌ El archivo no contiene una receta válida.');
+                return;
+            }
+
+            var existe = recetas.some(function(r) { 
+                return r.nombre.toLowerCase() === recetaImportada.nombre.toLowerCase(); 
+            });
+
+            var mensaje = 'Se ha encontrado la receta:\n\n"' + recetaImportada.nombre + '"\n\n';
+            
+            if (existe) {
+                mensaje += '⚠️ Ya existe una receta con este nombre.\n\n';
+                mensaje += 'Aceptar = Reemplazar la existente\n';
+                mensaje += 'Cancelar = Mantener la actual y no importar';
+                
+                if (confirm(mensaje)) {
+                    recetas = recetas.filter(function(r) { 
+                        return r.nombre.toLowerCase() !== recetaImportada.nombre.toLowerCase(); 
+                    });
+                    recetaImportada.id = Date.now().toString();
+                    recetas.push(recetaImportada);
+                    guardarDatos();
+                    alert('✅ Receta importada (reemplazada) correctamente');
+                }
+            } else {
+                mensaje += 'Aceptar = Importar la receta\n';
+                mensaje += 'Cancelar = No importar';
+                
+                if (confirm(mensaje)) {
+                    recetaImportada.id = Date.now().toString();
+                    recetas.push(recetaImportada);
+                    guardarDatos();
+                    alert('✅ Receta importada correctamente');
+                }
+            }
+            
+            renderCategoriasChips();
+            
+        } catch (error) {
+            alert('❌ Error al importar: archivo no válido.\n\n' + error.message);
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+// ============ MODAL EXPORTAR MÚLTIPLES ============
+function abrirModalExportar() {
     if (recetas.length === 0) {
         alert('No hay recetas para exportar');
         return;
     }
     
+    var lista = document.getElementById('lista-exportar');
+    var html = '';
+    
+    for (var i = 0; i < recetas.length; i++) {
+        var r = recetas[i];
+        var catLabel = r.categoria ? '<span class="receta-check-categoria">' + r.categoria + '</span>' : '';
+        html += '<label class="receta-check">';
+        html += '<input type="checkbox" class="check-receta" data-id="' + r.id + '" checked>';
+        html += '<span class="receta-check-label">' + r.nombre + '</span>';
+        html += catLabel;
+        html += '</label>';
+    }
+    
+    lista.innerHTML = html;
+    actualizarContador();
+    document.getElementById('modal-exportar').classList.add('activa');
+}
+
+function cerrarModalExportar() {
+    document.getElementById('modal-exportar').classList.remove('activa');
+}
+
+function seleccionarTodas(seleccionar) {
+    var checks = document.querySelectorAll('.check-receta');
+    for (var i = 0; i < checks.length; i++) {
+        checks[i].checked = seleccionar;
+    }
+    actualizarContador();
+}
+
+function actualizarContador() {
+    var checks = document.querySelectorAll('.check-receta:checked');
+    var total = document.querySelectorAll('.check-receta').length;
+    document.getElementById('contador-seleccion').innerHTML = '<strong>' + checks.length + '</strong> de <strong>' + total + '</strong> recetas seleccionadas';
+}
+
+// Actualizar contador al hacer clic en cualquier checkbox
+document.addEventListener('change', function(e) {
+    if (e.target && e.target.classList && e.target.classList.contains('check-receta')) {
+        actualizarContador();
+    }
+});
+
+function confirmarExportarSeleccion() {
+    var checks = document.querySelectorAll('.check-receta:checked');
+    
+    if (checks.length === 0) {
+        alert('Selecciona al menos una receta para exportar');
+        return;
+    }
+    
+    var recetasSeleccionadas = [];
+    for (var i = 0; i < checks.length; i++) {
+        var id = checks[i].getAttribute('data-id');
+        var receta = recetas.find(function(r) { return r.id === id; });
+        if (receta) recetasSeleccionadas.push(receta);
+    }
+    
     var datos = {
-        recetas: recetas,
+        tipo: 'multiple',
+        recetas: recetasSeleccionadas,
         categorias: categorias,
         fechaExportacion: new Date().toISOString()
     };
@@ -1570,16 +1941,18 @@ function exportarRecetas() {
     var url = URL.createObjectURL(dataBlob);
     var link = document.createElement('a');
     link.href = url;
-    link.download = 'mis_recetas_' + new Date().toISOString().split('T')[0] + '.json';
+    link.download = 'mis_recetas_' + recetasSeleccionadas.length + '_' + new Date().toISOString().split('T')[0] + '.json';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
     
-    alert('✅ ' + recetas.length + ' recetas exportadas correctamente');
+    cerrarModalExportar();
+    alert('✅ ' + recetasSeleccionadas.length + ' receta(s) exportada(s) correctamente');
 }
 
-function importarRecetas(event) {
+// ============ IMPORTAR RECETAS MÚLTIPLES ============
+function importarRecetasMultiple(event) {
     var file = event.target.files[0];
     if (!file) return;
 
@@ -1587,45 +1960,71 @@ function importarRecetas(event) {
     reader.onload = function(e) {
         try {
             var datos = JSON.parse(e.target.result);
-            var recetasImportadas = datos.recetas || [];
-            var categoriasImportadas = datos.categorias || [];
+            var recetasImportadas = null;
             
-            if (recetasImportadas.length === 0) {
-                alert('El archivo no contiene recetas válidas');
+            // Detectar formato: individual o múltiple
+            if (datos.tipo === 'multiple' && Array.isArray(datos.recetas)) {
+                recetasImportadas = datos.recetas;
+            } else if (datos.tipo === 'individual' && datos.receta) {
+                recetasImportadas = [datos.receta];
+            } else if (Array.isArray(datos.recetas)) {
+                // Formato antiguo sin "tipo"
+                recetasImportadas = datos.recetas;
+            } else if (datos.receta) {
+                recetasImportadas = [datos.receta];
+            }
+            
+            if (!recetasImportadas || recetasImportadas.length === 0) {
+                alert('❌ El archivo no contiene recetas válidas.');
                 return;
             }
 
-            var mensaje = 'Se importarán ' + recetasImportadas.length + ' recetas.\n\n';
-            mensaje += 'Aceptar = Reemplazar todas las recetas actuales\n';
-            mensaje += 'Cancelar = Agregar a las existentes';
+            var mensaje = 'Se han encontrado ' + recetasImportadas.length + ' receta(s) en el archivo.\n\n';
+            mensaje += 'Aceptar = Reemplazar TODAS las recetas actuales\n';
+            mensaje += 'Cancelar = Agregar a las existentes (evitando duplicados)';
             
             if (confirm(mensaje)) {
+                // Reemplazar todo
                 recetas = recetasImportadas;
-                categorias = categoriasImportadas;
+                if (datos.categorias && Array.isArray(datos.categorias)) {
+                    categorias = datos.categorias;
+                }
             } else {
+                // Agregar evitando duplicados por nombre
+                var agregadas = 0;
                 for (var i = 0; i < recetasImportadas.length; i++) {
-                    var existe = recetas.some(function(r) { return r.id === recetasImportadas[i].id; });
+                    var existe = recetas.some(function(r) { 
+                        return r.nombre.toLowerCase() === recetasImportadas[i].nombre.toLowerCase(); 
+                    });
                     if (!existe) {
+                        recetasImportadas[i].id = Date.now().toString() + '_' + i;
                         recetas.push(recetasImportadas[i]);
+                        agregadas++;
                     }
                 }
-                for (var j = 0; j < categoriasImportadas.length; j++) {
-                    if (categorias.indexOf(categoriasImportadas[j]) === -1) {
-                        categorias.push(categoriasImportadas[j]);
+                // Añadir categorías nuevas
+                if (datos.categorias && Array.isArray(datos.categorias)) {
+                    for (var j = 0; j < datos.categorias.length; j++) {
+                        if (categorias.indexOf(datos.categorias[j]) === -1) {
+                            categorias.push(datos.categorias[j]);
+                        }
                     }
                 }
+                alert('✅ Se agregaron ' + agregadas + ' receta(s) nueva(s)');
             }
             
             guardarDatos();
-            alert('✅ Recetas importadas correctamente');
+            alert('✅ Importación completada correctamente');
+            
         } catch (error) {
-            alert(' Error al importar: archivo no válido');
+            alert('❌ Error al importar: archivo no válido.\n\n' + error.message);
         }
     };
     reader.readAsText(file);
     event.target.value = '';
 }
 
+// ============ MODAL IMAGEN PANTALLA COMPLETA ============
 function abrirModalImagen(index) {
     var detalleContenido = document.getElementById('detalle-contenido');
     var imgs = detalleContenido.querySelectorAll('.detalle-imagen img');
@@ -1683,6 +2082,13 @@ document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') cerrarModalImagen();
     if (e.key === 'ArrowLeft') navImagen(-1);
     if (e.key === 'ArrowRight') navImagen(1);
+});
+
+// Cerrar modal exportar al hacer clic fuera
+document.getElementById('modal-exportar').addEventListener('click', function(e) {
+    if (e.target === this) {
+        cerrarModalExportar();
+    }
 });
 
 var timeoutBusqueda;
