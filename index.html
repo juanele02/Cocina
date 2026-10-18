@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Mis Recetas</title>
+<style>
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #0f0f1e;
+    color: #333;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+.pantalla {
+    display: none;
+    min-height: 100vh;
+}
+
+.pantalla.activa {
+    display: block;
+    animation: fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#pantalla-home {
+    background: linear-gradient(135deg, #1a1a2e 0%, #4a1e3a 50%, #673c4b 100%);
+    min-height: 100vh;
+    padding: 40px 20px 30px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+#pantalla-home.activa {
+    display: flex;
+}
+
+#pantalla-home::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(255, 107, 107, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(254, 202, 87, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.home-decoraciones {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.home-decoracion {
+    position: absolute;
+    font-size: 2.5em;
+    opacity: 0.12;
+    animation: flotar 4s ease-in-out infinite;
+}
+
+.home-decoracion:nth-child(1) { top: 8%; left: 8%; animation-delay: 0s; }
+.home-decoracion:nth-child(2) { top: 15%; right: 12%; animation-delay: 1s; }
+.home-decoracion:nth-child(3) { bottom: 20%; left: 12%; animation-delay: 2s; }
+.home-decoracion:nth-child(4) { bottom: 12%; right: 8%; animation-delay: 0.5s; }
+.home-decoracion:nth-child(5) { top: 45%; left: 5%; animation-delay: 1.5s; font-size: 2em; }
+.home-decoracion:nth-child(6) { top: 50%; right: 5%; animation-delay: 2.5s; font-size: 2em; }
+
+@keyframes flotar {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+.home-contenido {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.home-logo {
+    font-size: 4em;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 4px 20px rgba(0,0,0,0.4));
+    animation: flotar 3s ease-in-out infinite;
+}
+
+.home-titulo {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 3em;
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+    letter-spacing: 4px;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    margin-bottom: 5px;
+    line-height: 1;
+}
+
+.home-linea {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #ffd7a8, transparent);
+    margin: 15px 0;
+}
+
+.home-subtitulo {
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-size: 1.3em;
+    color: #ffd7a8;
+    text-align: center;
+    margin-bottom: 35px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.home-buscador {
+    width: 100%;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.home-buscador input {
+    width: 100%;
+    padding: 18px 25px 18px 55px;
+    font-size: 16px;
+    font-family: inherit;
+    border: none;
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    outline: none;
+    transition: all 0.3s;
+}
+
+.home-buscador input:focus {
+    background: #fff;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    transform: scale(1.02);
+}
+
+.home-buscador::before {
+    content: '🔍';
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.3em;
+    z-index: 1;
+}
+
+.home-botones {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.home-btn {
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    padding: 20px 15px;
+    border-radius: 18px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 16px;
+    color: #1a1a2e;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+    min-height: 70px;
+    width: 100%;
+}
+
+.home-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+}
+
+.home-btn:hover, .home-btn:active {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+}
+
+.home-btn-icon {
+    font-size: 1.8em;
+}
+
+.home-btn.full {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+    color: white;
+}
+
+.home-btn.full::before {
+    background: linear-gradient(90deg, #ffd7a8, #fff, #ffd7a8);
+}
+
+.home-btn.sync {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.home-btn.sync::before {
+    display: none;
+}
+
+.home-btn.sync:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.home-btn.sync .sync-icon {
+    font-size: 1.5em;
+}
+
+.dropdown-categorias {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0; right: 0;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.dropdown-menu.abierto {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-item {
+    padding: 14px 18px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+    color: #333;
+    font-weight: 500;
+}
+
+.dropdown-item:hover {
+    background: #f8f9fa;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item .contador {
+    background: #ff6b6b;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dropdown-vacio {
+    padding: 25px 20px;
+    text-align: center;
+    color: #999;
+    font-style: italic;
+}
+
+.pantalla-interna {
+    background: #f5f6fa;
+    min-height: 100vh;
+}
+
+.top-bar {
+    background: linear-gradient(135deg, #1a1a2e 0%, #673c4b 100%);
+    color: white;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.btn-volver {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-volver:hover, .btn-volver:active {
+    background: rgba(255,255,255,0.3);
+}
+
+.top-bar-titulo {
+    font-family: Georgia, serif;
+    font-size: 1.3em;
+    font-weight: 700;
+    flex: 1;
+}
+
+.contenido-interno {
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.filtro-activo {
+    background: white;
+    padding: 14px 18px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.filtro-activo-texto {
+    font-size: 14px;
+    color: #666;
+}
+
+.filtro-activo-texto strong {
+    color: #ff6b6b;
+    font-size: 15px;
+}
+
+.btn-limpiar-filtro {
+    background: #f0f0f0;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.btn-limpiar-filtro:hover {
+    background: #e0e0e0;
+}
+
+.recetas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 18px;
+}
+
+.receta-card {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.receta-card:hover, .receta-card:active {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+.receta-card-img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5em;
+}
+
+.receta-card-body {
+    padding: 16px;
+}
+
+.receta-card-categoria {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.receta-card-nombre {
+    font-family: Georgia, serif;
+    font-size: 1.2em;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.receta-card-meta {
+    font-size: 12px;
+    color: #888;
+    display: flex;
+    gap: 12px;
+}
+
+.sin-resultados {
+    text-align: center;
+    padding: 50px 20px;
+    color: #999;
+}
+
+.sin-resultados-icono {
+    font-size: 3.5em;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.sin-resultados h3 {
+    font-family: Georgia, serif;
+    font-size: 1.4em;
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.form-card {
+    background: white;
+    border-radius: 18px;
+    padding: 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.form-card h3 {
+    font-family: Georgia, serif;
+    color: #1a1a2e;
+    margin-bottom: 18px;
+    font-size: 1.3em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1a1a2e;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 13px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 15px;
+    font-family: inherit;
+    transition: all 0.2s;
+    background: #fafbfc;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ff6b6b;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 110px;
+}
+
+.form-hint {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.categorias-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.categoria-chip {
+    background: #f0f0f0;
+    border: 2px solid transparent;
+    padding: 9px 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+    transition: all 0.2s;
+}
+
+.categoria-chip:hover {
+    background: #e0e0e0;
+}
+
+.categoria-chip.seleccionada {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+    color: white;
+    border-color: #ff6b6b;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.nueva-categoria-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.nueva-categoria-row input {
+    flex: 1;
+    padding: 11px 14px;
+    border: 2px dashed #ddd;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    background: #fafbfc;
+}
+
+.nueva-categoria-row input:focus {
+    outline: none;
+    border-color: #ff6b6b;
+    border-style: solid;
+    background: white;
+}
+
+.btn-add-cat {
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+    color: white;
+    border: none;
+    padding: 11px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-add-cat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(17, 153, 142, 0.3);
+}
+
+.imagen-item {
+    background: #fafbfc;
+    border: 2px solid #e9ecef;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+
+.imagen-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.imagen-item-header strong {
+    color: #1a1a2e;
+    font-size: 14px;
+}
+
+.btn-eliminar-img {
+    background: #fee;
+    color: #ff6b6b;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: inherit;
+    font-weight: 600;
+}
+
+.imagen-item input[type="file"] {
+    font-size: 13px;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+.imagen-item input[type="text"] {
+    width: 100%;
+    padding: 10px 13px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.imagen-preview {
+    max-width: 100%;
+    max-height: 180px;
+    border-radius: 10px;
+    display: block;
+    margin-top: 8px;
+}
+
+.btn-agregar-img {
+    background: white;
+    border: 2px dashed #ff6b6b;
+    color: #ff6b6b;
+    padding: 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    width: 100%;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.btn-agregar-img:hover {
+    background: #fff5f5;
+}
+
+.acciones-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+    color: white;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+}
+
+.btn-secondary {
+    background: #e9ecef;
+    color: #555;
+}
+
+.btn-secondary:hover {
+    background: #dee2e6;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: white;
+}
+
+.detalle-card {
+    background: white;
+    border-radius: 18px;
+    padding: 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.detalle-titulo {
+    font-family: Georgia, serif;
+    font-size: 1.8em;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.detalle-categoria {
+    display: inline-block;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 18px;
+}
+
+.detalle-seccion-titulo {
+    font-family: Georgia, serif;
+    color: #673c4b;
+    font-size: 1.3em;
+    margin: 22px 0 12px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.detalle-ingredientes {
+    list-style: none;
+}
+
+.detalle-ingredientes li {
+    padding: 9px 0 9px 28px;
+    position: relative;
+    border-bottom: 1px solid #f8f9fa;
+    color: #555;
+}
+
+.detalle-ingredientes li::before {
+    content: '•';
+    color: #ff6b6b;
+    font-size: 1.5em;
+    position: absolute;
+    left: 8px;
+    top: 4px;
+}
+
+.detalle-elaboracion {
+    white-space: pre-wrap;
+    line-height: 1.8;
+    color: #555;
+}
+
+.detalle-imagen {
+    margin: 18px 0;
+    text-align: center;
+}
+
+.detalle-imagen img {
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.detalle-imagen img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
+
+.detalle-imagen .hint-zoom {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 6px;
+    font-style: italic;
+}
+
+.detalle-imagen p {
+    margin-top: 8px;
+    font-style: italic;
+    color: #888;
+    font-size: 14px;
+}
+
+.detalle-acciones {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.modal-imagen {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-imagen.activa {
+    display: flex;
+}
+
+.modal-imagen img {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+}
+
+.modal-imagen .modal-texto {
+    color: white;
+    margin-top: 15px;
+    font-style: italic;
+    font-size: 15px;
+    text-align: center;
+    max-width: 90%;
+}
+
+.modal-imagen .modal-cerrar {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 1.5em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.modal-imagen .modal-cerrar:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.modal-imagen .modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 1.5em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.modal-imagen .modal-nav:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.modal-imagen .modal-prev {
+    left: 20px;
+}
+
+.modal-imagen .modal-next {
+    right: 20px;
+}
+
+.modal-imagen .modal-contador {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+}
+
+@media (max-width: 600px) {
+    .home-titulo {
+        font-size: 2.3em;
+        letter-spacing: 2px;
+    }
+    .home-subtitulo {
+        font-size: 1.1em;
+    }
+    .home-logo {
+        font-size: 3em;
+    }
+    .recetas-grid {
+        grid-template-columns: 1fr;
+    }
+    .detalle-titulo {
+        font-size: 1.5em;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+::-webkit-scrollbar-thumb {
+    background: #ff6b6b;
+    border-radius: 3px;
+}
+
+#import-file {
+    display: none;
+}
+</style>
+</head>
+<body>
+
+<div id="pantalla-home" class="pantalla activa">
+    <div class="home-decoraciones">
+        <div class="home-decoracion">🍰</div>
+        <div class="home-decoracion"></div>
+        <div class="home-decoracion">🍪</div>
+        <div class="home-decoracion">🧁</div>
+        <div class="home-decoracion">🍝</div>
+        <div class="home-decoracion">🥗</div>
+    </div>
+
+    <div class="home-contenido">
+        <div class="home-logo">👩‍🍳</div>
+        <h1 class="home-titulo">MIS RECETAS</h1>
+        <div class="home-linea"></div>
+        <p class="home-subtitulo">Tu libro de cocina digital</p>
+
+        <div class="home-buscador">
+            <input type="text" id="buscador-home" placeholder="Buscar por nombre o ingrediente...">
+        </div>
+
+        <div class="home-botones">
+            <button class="home-btn" onclick="irAListado()">
+                <span class="home-btn-icon">📖</span>
+                <span>Todas las recetas</span>
+            </button>
+
+            <div class="dropdown-categorias">
+                <button class="home-btn" onclick="toggleDropdownCategorias(event)">
+                    <span class="home-btn-icon">🏷️</span>
+                    <span>Categorías</span>
+                </button>
+                <div id="dropdown-menu" class="dropdown-menu"></div>
+            </div>
+
+            <button class="home-btn full" onclick="irANuevaReceta()">
+                <span class="home-btn-icon">✨</span>
+                <span>Nueva receta</span>
+            </button>
+
+            <button class="home-btn sync" onclick="exportarRecetas()">
+                <span class="sync-icon">📤</span>
+                <span>Exportar recetas</span>
+            </button>
+
+            <button class="home-btn sync" onclick="document.getElementById('import-file').click()">
+                <span class="sync-icon">📥</span>
+                <span>Importar recetas</span>
+            </button>
+            <input type="file" id="import-file" accept=".json" onchange="importarRecetas(event)">
+        </div>
+    </div>
+</div>
+
+<div id="pantalla-listado" class="pantalla pantalla-interna">
+    <div class="top-bar">
+        <button class="btn-volver" onclick="irAHome()">←</button>
+        <h2 class="top-bar-titulo" id="listado-titulo">Todas las recetas</h2>
+    </div>
+    <div class="contenido-interno">
+        <div id="filtro-activo-container"></div>
+        <div id="listado-recetas" class="recetas-grid"></div>
+        <div id="sin-resultados" class="sin-resultados" style="display:none;">
+            <div class="sin-resultados-icono">📭</div>
+            <h3>No hay recetas</h3>
+            <p>Prueba con otra búsqueda o añade una nueva receta</p>
+        </div>
+    </div>
+</div>
+
+<div id="pantalla-formulario" class="pantalla pantalla-interna">
+    <div class="top-bar">
+        <button class="btn-volver" onclick="volverDesdeFormulario()">←</button>
+        <h2 class="top-bar-titulo" id="form-titulo">Nueva receta</h2>
+    </div>
+    <div class="contenido-interno">
+        <form id="form-receta" onsubmit="guardarReceta(event)">
+            <input type="hidden" id="receta-id">
+
+            <div class="form-card">
+                <h3>📝 Información básica</h3>
+                <div class="form-group">
+                    <label for="nombre">Nombre de la receta</label>
+                    <input type="text" id="nombre" required placeholder="Ej: Tarta de chocolate">
+                </div>
+            </div>
+
+            <div class="form-card">
+                <h3>🏷️ Categoría</h3>
+                <span class="form-hint">Selecciona una existente o crea una nueva</span>
+                <div id="categorias-chips" class="categorias-chips"></div>
+                <div class="nueva-categoria-row">
+                    <input type="text" id="nueva-categoria-input" placeholder="Nueva categoría...">
+                    <button type="button" class="btn-add-cat" onclick="agregarNuevaCategoria()">+ Añadir</button>
+                </div>
+                <input type="hidden" id="categoria-seleccionada">
+            </div>
+
+            <div class="form-card">
+                <h3>🥕 Ingredientes</h3>
+                <div class="form-group">
+                    <label>Un ingrediente por línea</label>
+                    <textarea id="ingredientes" required placeholder="200g de harina&#10;100g de azúcar&#10;3 huevos"></textarea>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <h3>‍🍳 Elaboración</h3>
+                <div class="form-group">
+                    <label>Describe paso a paso la preparación</label>
+                    <textarea id="elaboracion" required placeholder="1. Precalienta el horno...&#10;2. Mezcla los ingredientes..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <h3>📸 Imágenes</h3>
+                <div id="imagenes-container"></div>
+                <button type="button" class="btn-agregar-img" onclick="agregarImagen()">+ Agregar imagen</button>
+            </div>
+
+            <div class="acciones-form">
+                <button type="button" class="btn btn-secondary" onclick="volverDesdeFormulario()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">💾 Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="pantalla-detalle" class="pantalla pantalla-interna">
+    <div class="top-bar">
+        <button class="btn-volver" onclick="volverDesdeDetalle()">←</button>
+        <h2 class="top-bar-titulo">Detalle de receta</h2>
+    </div>
+    <div class="contenido-interno">
+        <div id="detalle-contenido"></div>
+    </div>
+</div>
+
+<div id="modal-imagen" class="modal-imagen">
+    <button class="modal-cerrar" onclick="cerrarModalImagen()">✕</button>
+    <button class="modal-nav modal-prev" onclick="navImagen(-1)">‹</button>
+    <button class="modal-nav modal-next" onclick="navImagen(1)">›</button>
+    <img id="modal-img-src" src="" alt="">
+    <div id="modal-img-texto" class="modal-texto"></div>
+    <div id="modal-img-contador" class="modal-contador"></div>
+</div>
+
+<script>
+var recetas = [];
+var categorias = [];
+var filtroActual = { tipo: null, valor: null };
+var pantallaAnterior = 'home';
+var recetaEditandoId = null;
+var contadorImagenes = 0;
+var imagenesActuales = [];
+var imagenActualIndex = 0;
+
+function cargarDatos() {
+    try {
+        var r = localStorage.getItem('recetas_pro');
+        var c = localStorage.getItem('categorias_pro');
+        recetas = r ? JSON.parse(r) : [];
+        categorias = c ? JSON.parse(c) : ['Postres', 'Platos principales', 'Entrantes', 'Ensaladas', 'Sopas', 'Bebidas'];
+    } catch(e) {
+        recetas = [];
+        categorias = ['Postres', 'Platos principales', 'Entrantes', 'Ensaladas', 'Sopas', 'Bebidas'];
+    }
+}
+
+function guardarDatos() {
+    try {
+        localStorage.setItem('recetas_pro', JSON.stringify(recetas));
+        localStorage.setItem('categorias_pro', JSON.stringify(categorias));
+    } catch(e) {
+        alert('Error al guardar: ' + e.message);
+    }
+}
+
+function mostrarPantalla(id) {
+    var pantallas = document.querySelectorAll('.pantalla');
+    for (var i = 0; i < pantallas.length; i++) {
+        pantallas[i].classList.remove('activa');
+    }
+    document.getElementById(id).classList.add('activa');
+    window.scrollTo(0, 0);
+}
+
+function irAHome() {
+    filtroActual = { tipo: null, valor: null };
+    document.getElementById('buscador-home').value = '';
+    document.getElementById('dropdown-menu').classList.remove('abierto');
+    mostrarPantalla('pantalla-home');
+}
+
+function irAListado(categoria, busqueda) {
+    if (categoria) {
+        filtroActual = { tipo: 'categoria', valor: categoria };
+        document.getElementById('listado-titulo').textContent = categoria;
+    } else if (busqueda) {
+        filtroActual = { tipo: 'busqueda', valor: busqueda };
+        document.getElementById('listado-titulo').textContent = 'Resultados';
+    } else {
+        filtroActual = { tipo: null, valor: null };
+        document.getElementById('listado-titulo').textContent = 'Todas las recetas';
+    }
+    pantallaAnterior = 'home';
+    renderListado();
+    mostrarPantalla('pantalla-listado');
+}
+
+function irANuevaReceta() {
+    recetaEditandoId = null;
+    document.getElementById('form-titulo').textContent = 'Nueva receta';
+    document.getElementById('form-receta').reset();
+    document.getElementById('receta-id').value = '';
+    document.getElementById('categoria-seleccionada').value = '';
+    document.getElementById('imagenes-container').innerHTML = '';
+    contadorImagenes = 0;
+    renderCategoriasChips();
+    pantallaAnterior = 'home';
+    mostrarPantalla('pantalla-formulario');
+}
+
+function irAEditarReceta(id) {
+    var receta = recetas.find(function(r) { return r.id === id; });
+    if (!receta) return;
+
+    recetaEditandoId = id;
+    document.getElementById('form-titulo').textContent = 'Editar receta';
+    document.getElementById('receta-id').value = id;
+    document.getElementById('nombre').value = receta.nombre;
+    document.getElementById('ingredientes').value = receta.ingredientes;
+    document.getElementById('elaboracion').value = receta.elaboracion;
+    document.getElementById('categoria-seleccionada').value = receta.categoria || '';
+
+    renderCategoriasChips(receta.categoria);
+
+    var container = document.getElementById('imagenes-container');
+    container.innerHTML = '';
+    contadorImagenes = 0;
+    if (receta.imagenes) {
+        for (var i = 0; i < receta.imagenes.length; i++) {
+            agregarImagen(receta.imagenes[i].data, receta.imagenes[i].texto);
+        }
+    }
+
+    pantallaAnterior = 'detalle';
+    mostrarPantalla('pantalla-formulario');
+}
+
+function verReceta(id) {
+    var receta = recetas.find(function(r) { return r.id === id; });
+    if (!receta) return;
+
+    var imagenesHTML = '';
+    if (receta.imagenes && receta.imagenes.length > 0) {
+        for (var i = 0; i < receta.imagenes.length; i++) {
+            var img = receta.imagenes[i];
+            imagenesHTML += '<div class="detalle-imagen">';
+            imagenesHTML += '<img src="' + img.data + '" alt="" onclick="abrirModalImagen(' + i + ')">';
+            imagenesHTML += '<div class="hint-zoom">🔍 Pulsa para ampliar</div>';
+            if (img.texto) imagenesHTML += '<p>' + img.texto + '</p>';
+            imagenesHTML += '</div>';
+        }
+    }
+
+    var ingredientes = receta.ingredientes.split('\n').filter(function(i) { return i.trim(); });
+    var ingredientesHTML = '';
+    for (var j = 0; j < ingredientes.length; j++) {
+        ingredientesHTML += '<li>' + ingredientes[j].trim() + '</li>';
+    }
+
+    var html = '<div class="detalle-card">';
+    html += '<h1 class="detalle-titulo">' + receta.nombre + '</h1>';
+    if (receta.categoria) html += '<span class="detalle-categoria">' + receta.categoria + '</span>';
+    html += '<h3 class="detalle-seccion-titulo">🥕 Ingredientes</h3>';
+    html += '<ul class="detalle-ingredientes">' + ingredientesHTML + '</ul>';
+    html += '<h3 class="detalle-seccion-titulo">‍🍳 Elaboración</h3>';
+    html += '<div class="detalle-elaboracion">' + receta.elaboracion + '</div>';
+    html += imagenesHTML;
+    html += '<div class="detalle-acciones">';
+    html += '<button class="btn btn-secondary" onclick="irAEditarReceta(\'' + receta.id + '\')">✏️ Editar</button>';
+    html += '<button class="btn btn-danger" onclick="confirmarEliminar(\'' + receta.id + '\')">🗑️ Eliminar</button>';
+    html += '</div></div>';
+
+    document.getElementById('detalle-contenido').innerHTML = html;
+    mostrarPantalla('pantalla-detalle');
+}
+
+function volverDesdeDetalle() {
+    if (pantallaAnterior === 'home') {
+        irAHome();
+    } else {
+        renderListado();
+        mostrarPantalla('pantalla-listado');
+    }
+}
+
+function volverDesdeFormulario() {
+    if (pantallaAnterior === 'detalle' && recetaEditandoId) {
+        verReceta(recetaEditandoId);
+    } else {
+        irAHome();
+    }
+}
+
+function toggleDropdownCategorias(event) {
+    if (event) event.stopPropagation();
+    var menu = document.getElementById('dropdown-menu');
+    menu.classList.toggle('abierto');
+    if (menu.classList.contains('abierto')) {
+        renderDropdownCategorias();
+    }
+}
+
+function renderDropdownCategorias() {
+    var menu = document.getElementById('dropdown-menu');
+    var conteo = {};
+    
+    for (var i = 0; i < recetas.length; i++) {
+        var cat = recetas[i].categoria;
+        if (cat) {
+            conteo[cat] = (conteo[cat] || 0) + 1;
+        }
+    }
+
+    var categoriasConRecetas = categorias.filter(function(c) { return conteo[c] > 0; });
+
+    if (categoriasConRecetas.length === 0) {
+        menu.innerHTML = '<div class="dropdown-vacio">Aún no hay categorías con recetas</div>';
+        return;
+    }
+
+    var html = '';
+    for (var j = 0; j < categoriasConRecetas.length; j++) {
+        var cat = categoriasConRecetas[j];
+        html += '<div class="dropdown-item" onclick="seleccionarCategoria(\'' + cat.replace(/'/g, "\\'") + '\')">';
+        html += '<span>' + cat + '</span>';
+        html += '<span class="contador">' + conteo[cat] + '</span>';
+        html += '</div>';
+    }
+    menu.innerHTML = html;
+}
+
+function seleccionarCategoria(cat) {
+    document.getElementById('dropdown-menu').classList.remove('abierto');
+    irAListado(cat);
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.dropdown-categorias')) {
+        var menu = document.getElementById('dropdown-menu');
+        if (menu) menu.classList.remove('abierto');
+    }
+});
+
+function renderListado() {
+    var container = document.getElementById('listado-recetas');
+    var sinResultados = document.getElementById('sin-resultados');
+    var filtroContainer = document.getElementById('filtro-activo-container');
+
+    var recetasFiltradas = recetas.slice();
+
+    if (filtroActual.tipo === 'categoria') {
+        recetasFiltradas = recetasFiltradas.filter(function(r) { return r.categoria === filtroActual.valor; });
+        filtroContainer.innerHTML = '<div class="filtro-activo"><div class="filtro-activo-texto">Mostrando: <strong>' + filtroActual.valor + '</strong></div><button class="btn-limpiar-filtro" onclick="limpiarFiltro()">✕ Quitar filtro</button></div>';
+    } else if (filtroActual.tipo === 'busqueda') {
+        var texto = filtroActual.valor.toLowerCase();
+        recetasFiltradas = recetasFiltradas.filter(function(r) {
+            return r.nombre.toLowerCase().indexOf(texto) !== -1 ||
+                   r.ingredientes.toLowerCase().indexOf(texto) !== -1 ||
+                   (r.categoria && r.categoria.toLowerCase().indexOf(texto) !== -1);
+        });
+        filtroContainer.innerHTML = '<div class="filtro-activo"><div class="filtro-activo-texto">Buscando: <strong>"' + filtroActual.valor + '"</strong></div><button class="btn-limpiar-filtro" onclick="limpiarFiltro()">✕ Quitar filtro</button></div>';
+    } else {
+        filtroContainer.innerHTML = '';
+    }
+
+    if (recetasFiltradas.length === 0) {
+        container.innerHTML = '';
+        sinResultados.style.display = 'block';
+        return;
+    }
+
+    sinResultados.style.display = 'none';
+    var html = '';
+    for (var i = 0; i < recetasFiltradas.length; i++) {
+        var receta = recetasFiltradas[i];
+        var imgHTML;
+        if (receta.imagenes && receta.imagenes.length > 0) {
+            imgHTML = '<img src="' + receta.imagenes[0].data + '" alt="" class="receta-card-img">';
+        } else {
+            imgHTML = '<div class="receta-card-img">🍽️</div>';
+        }
+        
+        var numIng = receta.ingredientes.split('\n').filter(function(x) { return x.trim(); }).length;
+        var catHTML = receta.categoria ? '<span class="receta-card-categoria">' + receta.categoria + '</span>' : '';
+
+        html += '<div class="receta-card" onclick="verReceta(\'' + receta.id + '\')">';
+        html += imgHTML;
+        html += '<div class="receta-card-body">';
+        html += catHTML;
+        html += '<h3 class="receta-card-nombre">' + receta.nombre + '</h3>';
+        html += '<div class="receta-card-meta">';
+        html += '<span>🥕 ' + numIng + ' ingredientes</span>';
+        if (receta.imagenes) html += '<span>📸 ' + receta.imagenes.length + '</span>';
+        html += '</div></div></div>';
+    }
+    container.innerHTML = html;
+}
+
+function limpiarFiltro() {
+    filtroActual = { tipo: null, valor: null };
+    document.getElementById('listado-titulo').textContent = 'Todas las recetas';
+    renderListado();
+}
+
+function renderCategoriasChips(seleccionada) {
+    var container = document.getElementById('categorias-chips');
+    var sel = seleccionada || document.getElementById('categoria-seleccionada').value;
+
+    if (categorias.length === 0) {
+        container.innerHTML = '<p style="color:#999; font-style:italic; font-size:14px;">No hay categorías aún. Crea una nueva abajo.</p>';
+        return;
+    }
+
+    var html = '';
+    for (var i = 0; i < categorias.length; i++) {
+        var cat = categorias[i];
+        var cls = 'categoria-chip' + (cat === sel ? ' seleccionada' : '');
+        html += '<button type="button" class="' + cls + '" onclick="seleccionarCategoriaChip(\'' + cat.replace(/'/g, "\\'") + '\')">' + cat + '</button>';
+    }
+    container.innerHTML = html;
+}
+
+function seleccionarCategoriaChip(cat) {
+    var actual = document.getElementById('categoria-seleccionada').value;
+    document.getElementById('categoria-seleccionada').value = (actual === cat) ? '' : cat;
+    renderCategoriasChips();
+}
+
+function agregarNuevaCategoria() {
+    var input = document.getElementById('nueva-categoria-input');
+    var nombre = input.value.trim();
+    if (!nombre) return;
+
+    var nombreNorm = nombre.charAt(0).toUpperCase() + nombre.slice(1);
+
+    if (categorias.indexOf(nombreNorm) !== -1) {
+        alert('Esta categoría ya existe');
+        input.value = '';
+        return;
+    }
+
+    categorias.push(nombreNorm);
+    categorias.sort();
+    guardarDatos();
+    document.getElementById('categoria-seleccionada').value = nombreNorm;
+    input.value = '';
+    renderCategoriasChips();
+}
+
+document.getElementById('nueva-categoria-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        agregarNuevaCategoria();
+    }
+});
+
+function agregarImagen(data, texto) {
+    var container = document.getElementById('imagenes-container');
+    var id = 'img-' + (contadorImagenes++);
+    
+    var div = document.createElement('div');
+    div.className = 'imagen-item';
+    div.id = id;
+    
+    var html = '<div class="imagen-item-header">';
+    html += '<strong>📷 Imagen</strong>';
+    html += '<button type="button" class="btn-eliminar-img" onclick="eliminarImagen(\'' + id + '\')">✕ Quitar</button>';
+    html += '</div>';
+    html += '<input type="file" accept="image/*" onchange="cargarImagen(event, \'' + id + '\')">';
+    html += '<input type="text" class="imagen-texto" placeholder="Texto descriptivo (opcional)" value="' + (texto || '').replace(/"/g, '&quot;') + '">';
+    if (data) html += '<img class="imagen-preview" src="' + data + '">';
+    html += '<input type="hidden" class="imagen-data" value="' + (data || '') + '">';
+    
+    div.innerHTML = html;
+    container.appendChild(div);
+}
+
+function cargarImagen(event, id) {
+    var file = event.target.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+            var canvas = document.createElement('canvas');
+            var MAX = 1000;
+            var w = img.width, h = img.height;
+            if (w > h) {
+                if (w > MAX) { h *= MAX / w; w = MAX; }
+            } else {
+                if (h > MAX) { w *= MAX / h; h = MAX; }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            var dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+
+            var item = document.getElementById(id);
+            item.querySelector('.imagen-data').value = dataUrl;
+            
+            var preview = item.querySelector('.imagen-preview');
+            if (!preview) {
+                preview = document.createElement('img');
+                preview.className = 'imagen-preview';
+                item.appendChild(preview);
+            }
+            preview.src = dataUrl;
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function eliminarImagen(id) {
+    var el = document.getElementById(id);
+    if (el) el.remove();
+}
+
+function guardarReceta(event) {
+    event.preventDefault();
+
+    var id = document.getElementById('receta-id').value;
+    var nombre = document.getElementById('nombre').value.trim();
+    var categoria = document.getElementById('categoria-seleccionada').value;
+    var ingredientes = document.getElementById('ingredientes').value;
+    var elaboracion = document.getElementById('elaboracion').value;
+
+    var imagenes = [];
+    var items = document.querySelectorAll('.imagen-item');
+    for (var i = 0; i < items.length; i++) {
+        var data = items[i].querySelector('.imagen-data').value;
+        var texto = items[i].querySelector('.imagen-texto').value.trim();
+        if (data) imagenes.push({ data: data, texto: texto });
+    }
+
+    var receta = {
+        id: id || Date.now().toString(),
+        nombre: nombre,
+        categoria: categoria,
+        ingredientes: ingredientes,
+        elaboracion: elaboracion,
+        imagenes: imagenes,
+        fechaActualizacion: new Date().toISOString()
+    };
+
+    if (id) {
+        var idx = recetas.findIndex(function(r) { return r.id === id; });
+        if (idx !== -1) recetas[idx] = receta;
+    } else {
+        recetas.push(receta);
+    }
+
+    guardarDatos();
+    
+    if (pantallaAnterior === 'detalle' && recetaEditandoId) {
+        verReceta(receta.id);
+    } else {
+        irAHome();
+    }
+}
+
+function confirmarEliminar(id) {
+    if (confirm('¿Seguro que quieres eliminar esta receta?')) {
+        recetas = recetas.filter(function(r) { return r.id !== id; });
+        guardarDatos();
+        irAHome();
+    }
+}
+
+function exportarRecetas() {
+    if (recetas.length === 0) {
+        alert('No hay recetas para exportar');
+        return;
+    }
+    
+    var datos = {
+        recetas: recetas,
+        categorias: categorias,
+        fechaExportacion: new Date().toISOString()
+    };
+    
+    var dataStr = JSON.stringify(datos, null, 2);
+    var dataBlob = new Blob([dataStr], { type: 'application/json' });
+    var url = URL.createObjectURL(dataBlob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'mis_recetas_' + new Date().toISOString().split('T')[0] + '.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    alert('✅ ' + recetas.length + ' recetas exportadas correctamente');
+}
+
+function importarRecetas(event) {
+    var file = event.target.files[0];
+    if (!file) return;
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            var datos = JSON.parse(e.target.result);
+            var recetasImportadas = datos.recetas || [];
+            var categoriasImportadas = datos.categorias || [];
+            
+            if (recetasImportadas.length === 0) {
+                alert('El archivo no contiene recetas válidas');
+                return;
+            }
+
+            var mensaje = 'Se importarán ' + recetasImportadas.length + ' recetas.\n\n';
+            mensaje += 'Aceptar = Reemplazar todas las recetas actuales\n';
+            mensaje += 'Cancelar = Agregar a las existentes';
+            
+            if (confirm(mensaje)) {
+                recetas = recetasImportadas;
+                categorias = categoriasImportadas;
+            } else {
+                for (var i = 0; i < recetasImportadas.length; i++) {
+                    var existe = recetas.some(function(r) { return r.id === recetasImportadas[i].id; });
+                    if (!existe) {
+                        recetas.push(recetasImportadas[i]);
+                    }
+                }
+                for (var j = 0; j < categoriasImportadas.length; j++) {
+                    if (categorias.indexOf(categoriasImportadas[j]) === -1) {
+                        categorias.push(categoriasImportadas[j]);
+                    }
+                }
+            }
+            
+            guardarDatos();
+            alert('✅ Recetas importadas correctamente');
+        } catch (error) {
+            alert(' Error al importar: archivo no válido');
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+function abrirModalImagen(index) {
+    var detalleContenido = document.getElementById('detalle-contenido');
+    var imgs = detalleContenido.querySelectorAll('.detalle-imagen img');
+    
+    imagenesActuales = [];
+    for (var i = 0; i < imgs.length; i++) {
+        var textoEl = imgs[i].parentElement.querySelector('p');
+        imagenesActuales.push({
+            src: imgs[i].src,
+            texto: textoEl ? textoEl.textContent : ''
+        });
+    }
+    
+    if (imagenesActuales.length === 0) return;
+    
+    imagenActualIndex = index;
+    actualizarModalImagen();
+    document.getElementById('modal-imagen').classList.add('activa');
+    document.body.style.overflow = 'hidden';
+}
+
+function actualizarModalImagen() {
+    var img = imagenesActuales[imagenActualIndex];
+    document.getElementById('modal-img-src').src = img.src;
+    document.getElementById('modal-img-texto').textContent = img.texto;
+    document.getElementById('modal-img-contador').textContent = (imagenActualIndex + 1) + ' / ' + imagenesActuales.length;
+    
+    var prevBtn = document.querySelector('.modal-prev');
+    var nextBtn = document.querySelector('.modal-next');
+    if (prevBtn) prevBtn.style.display = imagenesActuales.length > 1 ? 'flex' : 'none';
+    if (nextBtn) nextBtn.style.display = imagenesActuales.length > 1 ? 'flex' : 'none';
+}
+
+function navImagen(dir) {
+    if (imagenesActuales.length <= 1) return;
+    imagenActualIndex = (imagenActualIndex + dir + imagenesActuales.length) % imagenesActuales.length;
+    actualizarModalImagen();
+}
+
+function cerrarModalImagen() {
+    document.getElementById('modal-imagen').classList.remove('activa');
+    document.body.style.overflow = '';
+}
+
+document.getElementById('modal-imagen').addEventListener('click', function(e) {
+    if (e.target === this) {
+        cerrarModalImagen();
+    }
+});
+
+document.addEventListener('keydown', function(e) {
+    var modal = document.getElementById('modal-imagen');
+    if (!modal.classList.contains('activa')) return;
+    
+    if (e.key === 'Escape') cerrarModalImagen();
+    if (e.key === 'ArrowLeft') navImagen(-1);
+    if (e.key === 'ArrowRight') navImagen(1);
+});
+
+var timeoutBusqueda;
+document.getElementById('buscador-home').addEventListener('input', function(e) {
+    clearTimeout(timeoutBusqueda);
+    var valor = e.target.value.trim();
+    timeoutBusqueda = setTimeout(function() {
+        if (valor) {
+            irAListado(null, valor);
+        }
+    }, 500);
+});
+
+cargarDatos();
+</script>
+</body>
+</html>
